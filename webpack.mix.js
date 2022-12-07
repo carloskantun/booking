@@ -1,5 +1,4 @@
-let mix = require('laravel-mix');
-let webpack = require('webpack');
+const mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,15 +11,5 @@ let webpack = require('webpack');
  |
  */
 
-mix.webpackConfig({
-    plugins: [
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery',
-            Popper: ['popper.js', 'default']
-        })
-    ]})
-   .js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .sass('resources/sass/print.scss', 'public/css');
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css');

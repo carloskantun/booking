@@ -1,72 +1,100 @@
-@extends('layout.base')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<h1>Welkom!</h1>
+        <title>Laravel</title>
 
-<h3>Overzicht voor de komende twee weken</h3>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Van</th>
-      <th>Tot</th>
-      <th>Boeker</th>
-      <th>Land</th>
-      <th># gasten</th>
-      <th>Kamer</th>
-  </thead>
-  <tbody>
-    @foreach($bookings as $booking)
-    <tr @if ($booking->isNow())
-      class="booking__now @if ($booking->color()['luma'] > 180.0) reversed @endif"
-      style="background-color: {{$booking->color()['color'] }}" @endif>
-      <td>{{ $booking->arrival->format('d/m/Y') }}</td>
-      <td>{{ $booking->departure->format('d/m/Y') }}</td>
-      <td>
-        <a href="{{ route('planning', ['date' => $booking->arrival->toDateString()]) }}">
-          {{ $booking->customer->name }}
-        </a>
-      </td>
-      <td>{{ $booking->customer->country_str }}</td>
-      <td>{{ $booking->guests }}</td>
-      <td>
-        {{ $booking->rooms[0]->name }}
-        @if ($booking->rooms[0]->properties->options['part'] != -1)
-          &mdash; kamer {{ $booking->rooms[0]->properties->options['part']+1 }}
-        @endif
-      </td>
-    </tr>
-    @endforeach
-  </tbody>
-</table>
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
-<h3 class="mt-5">Vertrekken vandaag</h3>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Van</th>
-      <th>Tot</th>
-      <th>Boeker</th>
-      <th># gasten</th>
-      <th>Kamer</th>
-      <th>Prijs</th>
-  </thead>
-  <tbody>
-    @foreach($leaving as $booking)
-    <tr @if ($booking->isNow())
-      class="booking__now @if ($booking->color()['luma'] > 180.0) reversed @endif"
-      style="background-color: {{$booking->color()['color'] }}" @endif>
-      <td>{{ $booking->arrival->format('d/m/Y') }}</td>
-      <td>{{ $booking->departure->format('d/m/Y') }}</td>
-      <td>
-        <a href="{{ route('planning', ['date' => $booking->arrival->toDateString()]) }}">
-          {{ $booking->customer->name }}
-        </a>
-      </td>
-      <td>{{ $booking->guests }}</td>
-      <td>{{ $booking->rooms[0]->name }}</td>
-      <td>&euro;&nbsp;{{ $booking->basePrice * (1-$booking->discount) }}</td>
-    </tr>
-    @endforeach
-  </tbody>
-</table>
-@endsection
+        <!-- Styles -->
+        <style>
+            html, body {
+                background-color: #fff;
+                color: #636b6f;
+                font-family: 'Nunito', sans-serif;
+                font-weight: 200;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .full-height {
+                height: 100vh;
+            }
+
+            .flex-center {
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+
+            .position-ref {
+                position: relative;
+            }
+
+            .top-right {
+                position: absolute;
+                right: 10px;
+                top: 18px;
+            }
+
+            .content {
+                text-align: center;
+            }
+
+            .title {
+                font-size: 84px;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+            .m-b-md {
+                margin-bottom: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-center position-ref full-height">
+            @if (Route::has('login'))
+                <div class="top-right links">
+                    @auth
+                        <a href="{{ url('/home') }}">Home</a>
+                    @else
+                        <a href="{{ route('login') }}">Login</a>
+
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}">Register</a>
+                        @endif
+                    @endauth
+                </div>
+            @endif
+
+            <div class="content">
+                <div class="title m-b-md">
+                    Laravel
+                </div>
+
+                <div class="links">
+                    <a href="https://laravel.com/docs">Docs</a>
+                    <a href="https://laracasts.com">Laracasts</a>
+                    <a href="https://laravel-news.com">News</a>
+                    <a href="https://blog.laravel.com">Blog</a>
+                    <a href="https://nova.laravel.com">Nova</a>
+                    <a href="https://forge.laravel.com">Forge</a>
+                    <a href="https://vapor.laravel.com">Vapor</a>
+                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

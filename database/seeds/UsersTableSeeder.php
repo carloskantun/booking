@@ -1,41 +1,22 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-
-use App\User;
-use App\Role;
 
 class UsersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        $user = new User();
-        $user->username = "johndoe";
-        $user->name = "John Doe";
-        $user->email = "johndoe@example.com";
-        $user->password = Hash::make("secret");
-        $user->role()->associate(Role::where('name', 'viewer')->first());
-        $user->save();
+        $users = [
+            [
+                'id'             => 1,
+                'name'           => 'Admin',
+                'email'          => 'admin@admin.com',
+                'password'       => bcrypt('password'),
+                'remember_token' => null,
+            ],
+        ];
 
-        $user = new User();
-        $user->username = "janedoe";
-        $user->name = "Jane Doe";
-        $user->email = "janedoe@example.com";
-        $user->password = Hash::make("secret");
-        $user->role()->associate(Role::where('name', 'admin')->first());
-        $user->save();
-
-        $user = new User();
-        $user->username = "superdoe";
-        $user->name = "Super Doe";
-        $user->email = "superdoe@example.com";
-        $user->password = Hash::make("secret");
-        $user->role()->associate(Role::where('name', 'superadmin')->first());
-        $user->save();
+        User::insert($users);
     }
 }

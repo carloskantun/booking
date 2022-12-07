@@ -21,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/';
+    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -33,9 +33,6 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot();
-
-        Route::model('room', \App\Room::class);
-        Route::model('booking', \App\Booking::class);
     }
 
     /**

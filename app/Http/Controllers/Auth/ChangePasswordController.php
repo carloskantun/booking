@@ -2,46 +2,48 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
+use Gate;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ChangePasswordController extends Controller
 {
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function edit()
     {
-        $this->middleware('auth');
+        abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        return view('auth.passwords.edit');
     }
 
-    public function changePassword(Request $request) {
-        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
-            // The passwords matches
-            return redirect()->route('admin', ['#password'])->with("error","Your current password does not matches with the password you provided. Please try again.");
-        }
+    public function update(UpdatePasswordRequest $request)
+    {
+        auth()->user()->update($request->validated());
 
-        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
-            //Current password and new password are same
-            return redirect()->route('admin', ['#password'])->with("error","New Password cannot be same as your current password. Please choose a different password.");
-        }
+        return redirect()->route('profile.password.edit')->with('message', __('global.change_password_success'));
+    }
 
-        $validatedData = $request->validate([
-            'current-password' => 'required',
-            'new-password' => 'required|string|min:6|confirmed',
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = auth()->user();
+
+        $user->update($request->validated());
+
+        return redirect()->route('profile.password.edit')->with('message', __('global.update_profile_success'));
+    }
+
+    public function destroy()
+    {
+        $user = auth()->user();
+
+        $user->update([
+            'email' => time() . '_' . $user->email,
         ]);
 
-        //Change Password
-        $user = Auth::user();
-        $user->password = bcrypt($request->get('new-password'));
-        $user->save();
+        $user->delete();
 
-        return redirect()->route('admin', ['#password'])->with("success","Password changed successfully !");
+        return redirect()->route('login')->with('message', __('global.delete_account_success'));
     }
 }
